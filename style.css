@@ -45,11 +45,14 @@ body .content {
 :root {
   --cal-bg-color: #fff;
   --cal-border-radius: 0;
-  --cal-border-color: #e7e9ed;
-  --cal-today-bg-color: #10989e;
-  --cal-today-color: #fff;
-  --cal-selected-bg-color: #e7e9ed;
+  --cal-border-color: #E7E9Ed;
+  --cal-today-bg-color: #10989E;
+  --cal-today-color: #FFF;
+  --cal-selected-bg-color: #E7E9Ed;
   --cal-selected-color: #333;
+  --cal-weekend-bg-color: #FF8318;
+  --cal-medical-bg-color: #224AAE;
+  --cal-event-bg-color: #FFB318;
 }
 
 #cal *,
@@ -148,6 +151,11 @@ body .content {
 #cal .cal-date--selected {
   background-color: var(--cal-selected-bg-color);
   color: var(--cal-selected-color);
+}
+
+#cal .cal-date--weekend {
+  background-color: var(--cal-weekend-bg-color);
+  color: var(--cal-today-color);
 }
 
 #cal .cal-date--disabled {

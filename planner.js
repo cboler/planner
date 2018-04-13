@@ -166,6 +166,10 @@ PlannerEngine = (function(w, d) {
       newDay.classList.add("cal-date--today");
     }
 
+    if(day === 0 || day === 6){
+      newDay.classList.add("cal-date--weekend");
+    }
+
     newDay.appendChild(dateEl);
     this.month.appendChild(newDay);
   };
@@ -206,7 +210,6 @@ PlannerEngine = (function(w, d) {
     this.date.setMonth(this.date.getMonth() - 1);
 
     this.label.innerHTML = this.monthsAsString(this.date.getMonth()) + " " + this.date.getFullYear();
-    this.date = new Date();
     this.dateClicked();
   };
 
@@ -230,7 +233,6 @@ PlannerEngine = (function(w, d) {
     var millisecsInDay = 86400000;
     var weekNumber = Math.ceil((((this.date - janFirst) /millisecsInDay) + janFirst.getDay()+1)/7);
     this.label.innerHTML = "Week " + weekNumber +  " of " + this.date.getFullYear();
-    this.date = new Date();
     this.dateClicked();
   };
 
