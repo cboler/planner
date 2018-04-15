@@ -57,8 +57,44 @@
     <div id="activityModal" class="modal">
         <div id="overlay" class="modal__overlay"></div>
         <div class="modal__container">
-          <p>Add or edit an activity!</p>
+          <h3>Add or Edit an Activity</h3>
           <button id="modalClose" class="modal__close">&#10005;</button>
+          <p>
+            <label for="activityName">Activity Name: </label>
+            <input type="text" id="activityName" placeholder="Name of activity.">
+            <br />
+            <label for="activityType">Activity Type: </label>
+            <select id="activityType">
+                <option>Personal</option>
+                <option>Business</option>
+                <option>Medical</option>
+            </select>
+            <br />
+            <label for="startTime">Start Time: </label>
+            <select id="startTime">
+                <option>00:00</option>
+                <option>00:15</option>
+                <option>00:30</option>
+                <option>ad nauseum</option>
+            </select>
+            <br />
+            <label for="endTime">End Time: </label>
+            <select id="endTime">
+                    <option>00:00</option>
+                    <option>00:15</option>
+                    <option>00:30</option>
+                    <option>ad nauseum</option>
+            </select>
+            <br />
+          </p>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <button id="saveBtn">Save</button>
+          <button id="cancelBtn">Cancel</button>
         </div>
     </div>
     <!-- Script loaded at the bottom of body so the page isn't held up -->

@@ -21,3 +21,6 @@ for all medical appointments.
 NOTES:
 There is no restriction of the data model to be used, just make sure you reduce or optimize time
 complexity when accessing or recording entries.
+
+Assumptions:
+HTML and CSS are allowed. Nothing said about CSS frameworks, but may as well not push it.

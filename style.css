@@ -189,8 +189,10 @@ body .content {
   transition:visibility 0s linear 0.1s,opacity 0.3s ease;
 }
 
-body  .__overlay{
+modal__overlay{
   position: fixed;
+  height:100%;
+  width:100%;
   top: 0;
   left: 0;
   bottom: 0;
@@ -205,7 +207,7 @@ body .open{
   transition-delay:0s;
 }
 
-.body .__close{
+.modal__close{
   position: absolute;
   top: 10px;
   right: 10px;
@@ -217,11 +219,11 @@ body .open{
   font-weight: bold;
 }
 
-.__close :hover{
+.modal__close :hover{
   color: #000;
 }
 
-body .__container{
+.modal__container{
   position: relative;
   z-index: 22;
   width: 400px;
