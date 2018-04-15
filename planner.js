@@ -44,25 +44,29 @@ PlannerEngine = (function(w, d) {
     // Clears the calendar and shows the next month, week, or day
     this.next.addEventListener("click", function() {
       self.clearCalendar();
-      var nextMonth = self.date.getMonth() + 1;
-      self.date.setMonth(nextMonth);
       var weekLegend = d.querySelector('.cal-week');
       switch(MODE){
         case "1":
           weekLegend.style.visibility = "visible";
+          var nextMonth = self.date.getMonth() + 1;
+          self.date.setMonth(nextMonth);
           self.createMonth();
           break;
         case "2":
           weekLegend.style.visibility = "visible";
+          var nextWeek = self.date.getDate() + 7;
+          self.date.setDate(nextWeek);
           self.createWeek();
           break;
         case "3":
-          self.label.innerHTML = self.dayAsString(self.todaysDate.getDay()) +  ", " + self.monthsAsString(self.todaysDate.getMonth()) + " " + self.todaysDate.getDate() + " " + self.todaysDate.getFullYear();
+          self.label.innerHTML = self.dayAsString(self.date.getDay()) +  ", " + self.monthsAsString(self.date.getMonth()) + " " + self.date.getDate() + " " + self.date.getFullYear();
           weekLegend.style.visibility = "hidden";
+          var tomorrow = self.date.getDate() + 1;
+          self.date.setDate(tomorrow);
           self.createDay(
-            self.todaysDate.getDate(),
-            self.todaysDate.getDay(),
-            self.todaysDate.getFullYear()
+            self.date.getDate(),
+            self.date.getDay(),
+            self.date.getFullYear()
           );
           break;
       }
@@ -71,25 +75,29 @@ PlannerEngine = (function(w, d) {
     // Clears the calendar and shows the previous month, week, or day
     this.previous.addEventListener("click", function() {
       self.clearCalendar();
-      var prevMonth = self.date.getMonth() - 1;
-      self.date.setMonth(prevMonth);
       var weekLegend = d.querySelector('.cal-week');
       switch(MODE){
         case "1":
           weekLegend.style.visibility = "visible";
+          var prevMonth = self.date.getMonth() - 1;
+          self.date.setMonth(prevMonth);
           self.createMonth();
           break;
         case "2":
           weekLegend.style.visibility = "visible";
+          var prevWeek = self.date.getDate() - 7;
+          self.date.setDate(prevWeek);
           self.createWeek();
           break;
         case "3":
-          self.label.innerHTML = self.dayAsString(self.todaysDate.getDay()) +  ", " + self.monthsAsString(self.todaysDate.getMonth()) + " " + self.todaysDate.getDate() + " " + self.todaysDate.getFullYear();
+          self.label.innerHTML = self.dayAsString(self.date.getDay()) +  ", " + self.monthsAsString(self.date.getMonth()) + " " + self.date.getDate() + " " + self.date.getFullYear();
           weekLegend.style.visibility = "hidden";
+          var yesterday = self.date.getDate() - 1;
+          self.date.setDate(yesterday);
           self.createDay(
-            self.todaysDate.getDate(),
-            self.todaysDate.getDay(),
-            self.todaysDate.getFullYear()
+            self.date.getDate(),
+            self.date.getDay(),
+            self.date.getFullYear()
           );
           break;
       }
@@ -118,13 +126,13 @@ PlannerEngine = (function(w, d) {
             self.createWeek();
             break;
           case "3":
-            self.label.innerHTML = self.dayAsString(self.todaysDate.getDay()) +  ", " + self.monthsAsString(self.todaysDate.getMonth()) + " " + self.todaysDate.getDate() + " " + self.todaysDate.getFullYear();
+            self.label.innerHTML = self.dayAsString(self.date.getDay()) +  ", " + self.monthsAsString(self.date.getMonth()) + " " + self.date.getDate() + " " + self.date.getFullYear();
             var weekLegend = d.querySelector('.cal-week');
             weekLegend.style.visibility = "hidden";
             self.createDay(
-              self.todaysDate.getDate(),
-              self.todaysDate.getDay(),
-              self.todaysDate.getFullYear()
+              self.date.getDate(),
+              self.date.getDay(),
+              self.date.getFullYear()
             );
             break;
         }
@@ -186,7 +194,8 @@ PlannerEngine = (function(w, d) {
         this.classList.add("cal-date--selected");
 
         var modalWindow = d.querySelector("#activityModal");
-        modalWindow.classList ? modalWindow.classList.add('open') : modalWindow.className += ' ' + 'open'; 
+        // not a true array, is a DomTokenList
+        modalWindow.classList.contains('open') ? modalWindow.classList.remove('open') : modalWindow.className += ' ' + 'open'; 
       });
     }
   };

@@ -71,6 +71,11 @@ body .content {
   width: 100%;
 }
 
+#cal .cal-btn:active {
+  border-radius: var(--cal-border-radius);
+  box-shadow: 0 0 0 2px rgba(var(--cal-today-bg-color), 0.1);
+}
+
 #cal .cal-btn {
   -moz-user-select: none;
   -ms-user-select: none;
@@ -86,10 +91,6 @@ body .content {
   overflow: visible;
   padding: 0;
   text-align: center;
-  &:active {
-    border-radius: var(--cal-border-radius);
-    box-shadow: 0 0 0 2px rgba(var(--cal-today-bg-color), 0.1);
-  }
 }
 
 #cal .cal-header {
@@ -186,50 +187,50 @@ body .content {
   opacity: 0;
   visibility: hidden;
   transition:visibility 0s linear 0.1s,opacity 0.3s ease;
-  
-  &.open{
-    visibility:visible;
-    opacity: 1;
-    transition-delay:0s;
-  }
-  
-  &__overlay{
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 21;
-    background-color: rgba(0,0,0,0.7);
-  }
-  
-  &__close{
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    border: none;
-    outline: none;
-    background: none;
-    font-size: 24px;
-    color: #747474;
-    font-weight: bold;
-    
-    &:hover{
-      color: #000;
-    }
-  }
-  
-  &__container{
-    position: relative;
-    z-index: 22;
-    width: 400px;
-    height: 200px;
-    top: 50%;
-    transform: translateY(-50%);
-    box-shadow:  0 0 10px #fff;
-    margin: 0 auto;
-    padding: 30px;
-    background-color: #fff;
-    text-align: center;
-  }
+}
+
+body  .__overlay{
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 21;
+  background-color: rgba(0,0,0,0.7);
+}
+
+body .open{
+  visibility:visible;
+  opacity: 1;
+  transition-delay:0s;
+}
+
+.body .__close{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 24px;
+  color: #747474;
+  font-weight: bold;
+}
+
+.__close :hover{
+  color: #000;
+}
+
+body .__container{
+  position: relative;
+  z-index: 22;
+  width: 400px;
+  height: 200px;
+  top: 50%;
+  transform: translateY(-50%);
+  box-shadow:  0 0 10px #fff;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fff;
+  text-align: center;
 }
