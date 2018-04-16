@@ -16,10 +16,13 @@ PlannerEngine = (function(w, d) {
   this.label = d.querySelectorAll('[data-calendar-label="month"]')[0];
   this.modes = d.querySelectorAll('input[name="MODE"]');
   this.MODE = d.querySelector('input[name="MODE"]:checked').value;
+  this.saveBtn = d.querySelector('#saveBtn');
+  this.cancelBtn = d.querySelector('#cancelBtn');
   this.activeDates = null;
   this.date = new Date();
   this.todaysDate = new Date();
-  this.activity = null;
+  this.clickedObj = null;
+  this.activityArray = [];
 
   //Methods
 
@@ -54,8 +57,10 @@ PlannerEngine = (function(w, d) {
           break;
         case "2":
           weekLegend.style.visibility = "visible";
-          var nextWeek = self.date.getDate() + 7;
-          self.date.setDate(nextWeek);
+          // Setting the week doesn't work if the value ends up over 30/31 (or less, in February). Milliseconds should do fine.
+          var weekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+          var nextWeek = self.date.getTime() + weekInMilliseconds; // TODO: this skips ahead 2 weeks, fix.
+          self.date.setTime(nextWeek);
           self.createWeek();
           break;
         case "3":
@@ -85,8 +90,10 @@ PlannerEngine = (function(w, d) {
           break;
         case "2":
           weekLegend.style.visibility = "visible";
-          var prevWeek = self.date.getDate() - 7;
-          self.date.setDate(prevWeek);
+          // Setting the week doesn't work if the value ends up over 30/31 (or less, in February). Milliseconds should do fine.
+          var weekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
+          var prevWeek = self.date.getTime() - weekInMilliseconds;  // TODO: this doesn't act right, fix.
+          self.date.setTime(prevWeek);
           self.createWeek();
           break;
         case "3":
@@ -138,6 +145,70 @@ PlannerEngine = (function(w, d) {
         }
       });
     }
+
+    this.saveBtn.addEventListener("click", function(){
+      // build new activity object
+      var st = d.querySelector("#startTime");
+      var et = d.querySelector("#endTime");
+      var activity = { 
+        activityName: d.querySelector("#activityName").value, 
+        activityType: d.querySelector("#activityType").value, 
+        startTime: st.options[st.selectedIndex].value, 
+        endTime: et.options[et.selectedIndex].value, 
+        date: self.clickedObj.dataset.calendarDate
+      };
+      // need a function to check time conflicts, it's my birthday--i don't feel like working on this.
+      if(!self.activityArray.includes(activity)){
+        self.activityArray.push(activity);
+      }
+
+      switch(activity.activityType){
+        case "Personal":
+          self.clickedObj.classList.add("cal-date--personal");
+          break;
+        case "Medical":
+          self.clickedObj.classList.add("cal-date--medical");
+          break;
+        case "Business":
+          self.clickedObj.classList.add("cal-date--business");
+          break;
+      }
+
+      self.closeModal();
+    });
+
+    this.removeBtn.addEventListener("click", function(){
+      // Hacky and not finished by any stretch of the imagination.
+      var st = d.querySelector("#startTime");
+      var et = d.querySelector("#endTime");
+      var activity = { 
+        activityName: d.querySelector("#activityName").value, 
+        activityType: d.querySelector("#activityType").value, 
+        startTime: st.options[st.selectedIndex].value, 
+        endTime: et.options[et.selectedIndex].value, 
+        date: self.clickedObj.dataset.calendarDate
+      };
+
+      // TODO: this is buggy and doesn't work, likely because the objects aren't exactly the same.
+      if(self.activityArray.includes(activity)){
+        self.activityArray.splice(self.activityArray.indexOf(activity), 1);
+      }
+
+      self.closeModal();
+    });
+
+    var closeButton = d.querySelector('#modalClose');
+    var closeOverlay = d.querySelector('#overlay');
+
+    closeButton.addEventListener("click", function() {
+      var modalWindow = d.querySelector("#activityModal");
+      modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    });
+
+    closeOverlay.addEventListener("click", function() {
+      var modalWindow = d.querySelector("#activityModal");
+      modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+    });
   };
 
   /**
@@ -151,6 +222,7 @@ PlannerEngine = (function(w, d) {
     var newDay = d.createElement("div");
     var dateEl = d.createElement("span");
     dateEl.innerHTML = num;
+    newDay.setAttribute("id", "day" + year + day + num)
     newDay.className = "cal-date";
     newDay.setAttribute("data-calendar-date", this.date);
 
@@ -192,7 +264,7 @@ PlannerEngine = (function(w, d) {
       this.activeDates[i].addEventListener("click", function(event) {
         self.removeActiveClass();
         this.classList.add("cal-date--selected");
-
+        self.clickedObj = this;
         var modalWindow = d.querySelector("#activityModal");
         // not a true array, is a DomTokenList
         modalWindow.classList.contains('open') ? modalWindow.classList.remove('open') : modalWindow.className += ' ' + 'open'; 
@@ -214,7 +286,7 @@ PlannerEngine = (function(w, d) {
       );
       this.date.setDate(this.date.getDate() + 1);
     }
-    // while loop trips over and day is at 30/31, bring it back
+    // loop goes over and day is at 30/31, bring it back to right
     this.date.setDate(1);
     this.date.setMonth(this.date.getMonth() - 1);
 
@@ -227,7 +299,7 @@ PlannerEngine = (function(w, d) {
    */
   createWeek = function() {
     var self = this;
-    var diff = this.todaysDate.getDate() - this.todaysDate.getDay() + (this.todaysDate.getDay() === 0 ? -6 : 1);
+    var diff = this.date.getDate() - this.date.getDay() + (this.date.getDay() === 0 ? -6 : 1);
     this.date.setDate(diff);
     for(var i = 0; i <= 6; i++){
       this.createDay(
@@ -295,16 +367,11 @@ PlannerEngine = (function(w, d) {
     var closeButton = d.querySelector('#modalClose');
     var closeOverlay = d.querySelector('#overlay');
 
-    closeButton.addEventListener("click", function() {
-      var modalWindow = d.querySelector("#activityModal");
-      modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-    });
+    var modalWindow = d.querySelector("#activityModal");
+    modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+  };
 
-    closeOverlay.addEventListener("click", function() {
-      var modalWindow = d.querySelector("#activityModal");
-      modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
-    });
-};
+
 
   /**
    * Clears the calendar

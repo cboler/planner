@@ -52,7 +52,8 @@ body .content {
   --cal-selected-color: #333;
   --cal-weekend-bg-color: #FF8318;
   --cal-medical-bg-color: #224AAE;
-  --cal-event-bg-color: #FFB318;
+  --cal-personal-bg-color: #FFB318;
+  --cal-business-bg-color: #016266;
 }
 
 #cal *,
@@ -156,6 +157,21 @@ body .content {
 
 #cal .cal-date--weekend {
   background-color: var(--cal-weekend-bg-color);
+  color: var(--cal-today-color);
+}
+
+#cal .cal-date--medical {
+  background-color: var(--cal-medical-bg-color);
+  color: var(--cal-today-color);
+}
+
+#cal .cal-date--business {
+  background-color: var(--cal-business-bg-color);
+  color: var(--cal-today-color);
+}
+
+#cal .cal-date--personal {
+  background-color: var(--cal-personal-bg-color);
   color: var(--cal-today-color);
 }
 

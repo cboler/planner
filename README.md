@@ -24,3 +24,5 @@ complexity when accessing or recording entries.
 
 Assumptions:
 HTML and CSS are allowed. Nothing said about CSS frameworks, but may as well not push it.
+
+Remind myself not to over-engineer things in the future and to K.I.S.S.
