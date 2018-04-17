@@ -157,11 +157,13 @@ PlannerEngine = (function(w, d) {
         endTime: et.options[et.selectedIndex].value, 
         date: self.clickedObj.dataset.calendarDate
       };
-      // need a function to check time conflicts, it's my birthday--i don't feel like working on this.
-      if(!self.activityArray.includes(activity)){
+      
+      // If i wanted to get really fancy, and I'd started earlier, I could come up with a good hashing fxn to index the array with, and add that hash to the calendar date object to make removing easier
+      if(self.checkConflict(activity)){
         self.activityArray.push(activity);
       }
 
+      // TODO:  Need to make another inner div to add representing the timeslot so it can be distinguished from other events happening the same day
       switch(activity.activityType){
         case "Personal":
           self.clickedObj.classList.add("cal-date--personal");
@@ -189,10 +191,8 @@ PlannerEngine = (function(w, d) {
         date: self.clickedObj.dataset.calendarDate
       };
 
-      // TODO: this is buggy and doesn't work, likely because the objects aren't exactly the same.
-      if(self.activityArray.includes(activity)){
-        self.activityArray.splice(self.activityArray.indexOf(activity), 1);
-      }
+      // TODO: this is buggy and doesn't work, likely because it isn't referencing the same object, even if the attributes are the same
+      self.activityArray.splice(self.activityArray.indexOf(activity), 1);
 
       self.closeModal();
     });
@@ -250,8 +250,38 @@ PlannerEngine = (function(w, d) {
       newDay.classList.add("cal-date--weekend");
     }
 
+    self.activityArray.forEach(element => {
+      if(element.date === newDay.getAttribute("data-calendar-date")){
+        switch(element.activityType){
+          case "Personal":
+            newDay.classList.add("cal-date--personal");
+            break;
+          case "Medical":
+            newDay.classList.add("cal-date--medical");
+            break;
+          case "Business":
+            newDay.classList.add("cal-date--business");
+            break;
+        }
+      }
+    });
+
     newDay.appendChild(dateEl);
     this.month.appendChild(newDay);
+  };
+
+  checkConflict = function(checkActivity){
+    for(var i = 0; i < this.activityArray.length; i++){
+      // check if same day, check if times overlap
+      if(this.activityArray[i].date === checkActivity.date && 
+          (checkActivity.startTime >= this.activityArray[i].startTime && checkActivity.startTime <= this.activityArray[i].endTime) &&
+          (checkActivity.endTime >= this.activityArray[i].startTime && checkActivity.endTime <= this.activityArray[i].endTime) &&
+          (checkActivity.startTime <= this.activityArray[i].startTime && checkActivity.endTime >= this.activityArray[i].endTime)
+      ){
+        return false;
+      }
+    }
+    return true;
   };
 
   /**
