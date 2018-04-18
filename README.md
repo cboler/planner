@@ -1,6 +1,6 @@
 # planner
 
-Small assignment application:
+Small assignment application (A lesson in biting off more than you can chew):
 
 ## Instructions
 
