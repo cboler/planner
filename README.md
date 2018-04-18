@@ -4,6 +4,8 @@ Small assignment application (A lesson in biting off more than you can chew):
 
 ## Instructions
 
+Laugh derisively at a live demo [here](http://www.boler.org/projects/index.html)!
+
 Weekly Planner.
 Create a weekly planner that allows you to add or record events that will happened during the
 selected week (one week at least, no need to change calendar time).
