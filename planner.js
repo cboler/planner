@@ -31,7 +31,7 @@ PlannerEngine = (function(w, d) {
    * 
    * @param {Object} options - currently the only option is to disable days prior to the current tate { disablePastDays : boolean }
    */
-  this.init = function(options) {
+  this.init = (options) => {
     this.options = options;
     this.date.setDate(1);
     this.createMonth();
@@ -41,11 +41,11 @@ PlannerEngine = (function(w, d) {
   /**
    * Creates handler events for DOM elements
    */
-  createListeners = function() {
+  createListeners = () => {
     var self = this;
     this.closeModal();
     // Clears the calendar and shows the next month, week, or day
-    this.next.addEventListener("click", function() {
+    this.next.addEventListener("click", () => {
       self.clearCalendar();
       var weekLegend = d.querySelector('.cal-week');
       switch(MODE){
@@ -78,7 +78,7 @@ PlannerEngine = (function(w, d) {
     });
 
     // Clears the calendar and shows the previous month, week, or day
-    this.previous.addEventListener("click", function() {
+    this.previous.addEventListener("click", () => {
       self.clearCalendar();
       var weekLegend = d.querySelector('.cal-week');
       switch(MODE){
@@ -113,7 +113,7 @@ PlannerEngine = (function(w, d) {
     // Adds handlers to each radio button
     for(var i = 0; i < modes.length; i++){
       // clears the calendar and displays the current month, week, or day
-      modes[i].addEventListener("change", function() {
+      modes[i].addEventListener("change", () => {
         // Update the MODE
         for(var j = 0; j < modes.length; j++){
           if(modes[j].checked){
@@ -146,7 +146,7 @@ PlannerEngine = (function(w, d) {
       });
     }
 
-    this.saveBtn.addEventListener("click", function(){
+    this.saveBtn.addEventListener("click", () => {
       // build new activity object
       var st = d.querySelector("#startTime");
       var et = d.querySelector("#endTime");
@@ -179,8 +179,8 @@ PlannerEngine = (function(w, d) {
       self.closeModal();
     });
 
-    this.removeBtn.addEventListener("click", function(){
-      // Hacky and not finished by any stretch of the imagination.
+    this.removeBtn.addEventListener("click", () => {
+      // Hacky and not finished by any stretch of the imagination. requires exact info entered.
       var st = d.querySelector("#startTime");
       var et = d.querySelector("#endTime");
       var activity = { 
@@ -200,12 +200,12 @@ PlannerEngine = (function(w, d) {
     var closeButton = d.querySelector('#modalClose');
     var closeOverlay = d.querySelector('#overlay');
 
-    closeButton.addEventListener("click", function() {
+    closeButton.addEventListener("click", () => {
       var modalWindow = d.querySelector("#activityModal");
       modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
     });
 
-    closeOverlay.addEventListener("click", function() {
+    closeOverlay.addEventListener("click", () => {
       var modalWindow = d.querySelector("#activityModal");
       modalWindow.classList ? modalWindow.classList.remove('open') : modalWindow.className = modalWindow.className.replace(new RegExp('(^|\\b)' + 'open'.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
     });
@@ -218,7 +218,8 @@ PlannerEngine = (function(w, d) {
    * @param {number} day - the day
    * @param {number} year - the full year
    */
-  createDay = function(num, day, year) {
+  createDay = (num, day, year) => {
+
     var newDay = d.createElement("div");
     var dateEl = d.createElement("span");
     dateEl.innerHTML = num;
@@ -270,7 +271,7 @@ PlannerEngine = (function(w, d) {
     this.month.appendChild(newDay);
   };
 
-  checkConflict = function(checkActivity){
+  checkConflict = (checkActivity) => {
     for(var i = 0; i < this.activityArray.length; i++){
       // check if same day, check if times overlap
       if(this.activityArray[i].date === checkActivity.date && 
@@ -287,7 +288,7 @@ PlannerEngine = (function(w, d) {
   /**
    * Add handlers to each active date.
    */
-  dateClicked = function() {
+  dateClicked = () => {
     var self = this;
     this.activeDates = d.querySelectorAll('[data-calendar-status="active"]');
     for (var i = 0; i < this.activeDates.length; i++) {
@@ -305,9 +306,10 @@ PlannerEngine = (function(w, d) {
   /**
    * Iterates over a month and creates day objects in the DOM.
    */
-  createMonth = function() {
+  createMonth = () => {
     var self = this;
     var currentMonth = this.date.getMonth();
+    this.date.setDate(1);
     while (self.date.getMonth() === currentMonth) {
       this.createDay(
         this.date.getDate(),
@@ -327,10 +329,21 @@ PlannerEngine = (function(w, d) {
   /**
    * Iterates over a week and adds day objects to the DOM
    */
-  createWeek = function() {
+  createWeek = () => {
     var self = this;
-    var diff = this.date.getDate() - this.date.getDay() + (this.date.getDay() === 0 ? -6 : 1);
-    this.date.setDate(diff);
+    // go back to the first day of the week
+    var diff = this.todaysDate.getDate() - this.todaysDate.getDay();
+
+    if(diff < 0) { 
+      //Beginning month week. Reset date to first of the month
+      this.date.setDate(1);
+    } else { 
+      //reset date to todays date
+      this.date = new Date(todaysDate.getTime());
+      //change date to monday of this week
+      this.date.setDate(diff + 1);
+    }
+
     for(var i = 0; i <= 6; i++){
       this.createDay(
         this.date.getDate(),
@@ -354,7 +367,7 @@ PlannerEngine = (function(w, d) {
    * 
    * @returns {string} month string representation
    */
-  monthsAsString = function(monthIndex) {
+  monthsAsString = (monthIndex) => {
     return [
       "January",
       "Febuary",
@@ -378,7 +391,7 @@ PlannerEngine = (function(w, d) {
    * 
    * @returns {string} day string representation
    */
-  dayAsString = function(dayIndex) {
+  dayAsString = (dayIndex) => {
     return [
       "Monday",
       "Tuesday",
@@ -393,7 +406,7 @@ PlannerEngine = (function(w, d) {
   /**
    * Adds handlers to close the modal
    */
-  closeModal = function (){
+  closeModal = () => {
     var closeButton = d.querySelector('#modalClose');
     var closeOverlay = d.querySelector('#overlay');
 
@@ -406,16 +419,16 @@ PlannerEngine = (function(w, d) {
   /**
    * Clears the calendar
    */
-  clearCalendar = function() {
+  clearCalendar = () => {
     this.month.innerHTML = "";
   };
 
   /**
    * Removes the activated class from a day object
    */
-  removeActiveClass = function() {
-    for (var i = 0; i < this.activeDates.length; i++) {
-      this.activeDates[i].classList.remove("cal-date--selected");
+  removeActiveClass = () => {
+    for (ad in this.activeDates.length) {
+      ad.classList.remove("cal-date--selected");
     }
   };
 

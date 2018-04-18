@@ -203,6 +203,7 @@ body .content {
   opacity: 0;
   visibility: hidden;
   transition:visibility 0s linear 0.1s,opacity 0.3s ease;
+  background-color: rgba(0, 0, 0, 0.75);
 }
 
 modal__overlay{
@@ -214,7 +215,6 @@ modal__overlay{
   bottom: 0;
   right: 0;
   z-index: 21;
-  background-color: rgba(0,0,0,0.7);
 }
 
 body .open{
